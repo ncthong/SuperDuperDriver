@@ -13,21 +13,33 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-     private AuthenticationService authenticationService;
 
-     @Override
-     protected void configure(AuthenticationManagerBuilder auth){
-         auth.authenticationProvider(authenticationService);
-     }
-     @Override
-     public void configure(WebSecurity web){
-         web.ignoring().antMatchers("/h2-console/**");
-     }
-     @Override
-     protected void configure(HttpSecurity http) throws Exception {
-         http.authorizeRequests().antMatchers("/signup","/css/**","/js/**").permitAll().anyRequest().authenticated();
-         http.formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/home",true);
-         http.logout().logoutUrl("/logout").invalidateHttpSession(true).deleteCookies("JSESSIONID")
-                 .logoutSuccessUrl("/login?logout").permitAll();
-     }
+    private AuthenticationService authenticationService;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authenticationService);
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers("/h2-console/**");
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/signup", "/css/**", "/js/**").permitAll()
+                .anyRequest().authenticated();
+
+        http.formLogin()
+                .loginPage("/login").permitAll()
+                .defaultSuccessUrl("/home", true);
+
+        http.logout()
+                .logoutUrl("/logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/login?logout").permitAll();
+    }
 }
