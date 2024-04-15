@@ -7,18 +7,19 @@ import java.util.List;
 
 @Mapper
 public interface NoteMapper {
-    @Select("select  * from NOTES where userid = #{userId}")
-    List<Note> getAllNotes(Integer userId);
+    @Select("SELECT * FROM NOTES WHERE userid = #{userId}")
+    List<Note> getUserNotes(Integer userId);
 
-    @Select("select * from NOTES where noteid = #{noteId} and userid = #{userId}")
-    Note getNoteById(Integer noteId, Integer userId);
+    @Select("SELECT * FROM NOTES WHERE noteid = #{noteId}")
+    Note getNote(Integer noteId);
 
-    @Insert("insert into NOTES(notetitle, notedescription, userid) values (#{noteTitle}, #{noteDescription}, #{userId})")
-    int addNote(Note note);
+    @Insert("INSERT INTO NOTES (notetitle, notedescription, userid) VALUES(#{noteTitle}, #{noteDescription}, #{userId})")
+    @Options(useGeneratedKeys = true, keyProperty = "noteId")
+    void insert(Note note);
 
-    @Delete("delete from NOTES where noteid = #{noteId} and userid = #{userId}")
-    int deleteNoteById(Integer noteId, Integer userId);
+    @Update("UPDATE NOTES SET notetitle = #{noteTitle}, notedescription = #{noteDescription} WHERE noteid = #{noteId}")
+    void update(Note note);
 
-    @Update({"update NOTES set notetitle = #{noteTitle}, notedescription = #{noteDescription} where noteid = #{noteId}"})
-    int updateNoteById(Note note);
+    @Delete("DELETE FROM NOTES WHERE noteid = #{noteId}")
+    int delete(Integer noteId);
 }

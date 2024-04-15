@@ -1,29 +1,39 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
-import com.udacity.jwdnd.course1.cloudstorage.services.FileUploadService;
-import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
+import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
+import com.udacity.jwdnd.course1.cloudstorage.model.File;
+import com.udacity.jwdnd.course1.cloudstorage.model.Note;
+import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.service.FileService;
+import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
+@RequestMapping("/home")
 @AllArgsConstructor
 public class HomeController {
-    private NoteService noteService;
-    private FileUploadService fileUploadService;
-    private CredentialService credentialService;
+    private final NoteService noteService;
+    private final CredentialService credentialService;
+    private final FileService fileService;
 
-    @GetMapping("/home")
-    public String getHomePage(Model model, Authentication authentication) {
-        User loginUser = (User) authentication.getPrincipal();
-        Integer userId = loginUser.getUserId();
-        model.addAttribute("ListFileUpload", fileUploadService.getFiles(userId));
-        model.addAttribute("ListNote", noteService.getAllNotes(userId));
-        model.addAttribute("ListCredentials", credentialService.getAllCredentials(userId));
+
+    @GetMapping
+    public String homeView(Authentication authentication, Model model) {
+        String username = authentication.getName();
+        List<Note> notes = noteService.getUserNotes(username);
+        List<Credential> credentials = credentialService.getUserCredentials(username);
+        List<File> files = fileService.getUserFiles(username);
+
+        model.addAttribute("notes", notes);
+        model.addAttribute("credentials", credentials);
+        model.addAttribute("files", files);
         return "home";
     }
 }

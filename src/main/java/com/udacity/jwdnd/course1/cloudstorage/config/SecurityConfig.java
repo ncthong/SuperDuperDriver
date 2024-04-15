@@ -1,45 +1,36 @@
 package com.udacity.jwdnd.course1.cloudstorage.config;
 
-import com.udacity.jwdnd.course1.cloudstorage.services.AuthenticationService;
-import lombok.AllArgsConstructor;
+import com.udacity.jwdnd.course1.cloudstorage.service.AuthenticationService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authenticationService);
+    public SecurityConfig(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/h2-console/**");
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(requests -> requests
+                .requestMatchers("/signup", "/login", "/css/**", "/js/**").permitAll()
+                .anyRequest().authenticated()
+        ).formLogin(form -> form
+                .loginPage("/login")
+                .permitAll()
+                .defaultSuccessUrl("/home", true)
+        );
+
+        http.authenticationProvider(authenticationService);
+
+        return http.build();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/signup", "/css/**", "/js/**").permitAll()
-                .anyRequest().authenticated();
-
-        http.formLogin()
-                .loginPage("/login").permitAll()
-                .defaultSuccessUrl("/home", true);
-
-        http.logout()
-                .logoutUrl("/logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login?logout").permitAll();
-    }
 }

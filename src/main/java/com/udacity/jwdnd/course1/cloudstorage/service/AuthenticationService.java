@@ -1,8 +1,7 @@
-package com.udacity.jwdnd.course1.cloudstorage.services;
+package com.udacity.jwdnd.course1.cloudstorage.service;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,21 +11,27 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-@AllArgsConstructor
 public class AuthenticationService implements AuthenticationProvider {
-    private UserMapper userMapper;
-    private HashService hashService;
+
+    private final UserMapper userMapper;
+    private final HashService hashService;
+
+    public AuthenticationService(UserMapper userMapper, HashService hashService) {
+        this.userMapper = userMapper;
+        this.hashService = hashService;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
-        String password = authentication.getCredentials().toString();
-        User user = userMapper.getUserByName(username);
-        if (user != null) {
-            String encodeSalt = user.getSalt();
-            String hashPassword = hashService.getHashedValue(password, encodeSalt);
-            if (user.getPassword().equals(hashPassword)) {
-                return new UsernamePasswordAuthenticationToken(user, password, new ArrayList<>());
+        String password= authentication.getCredentials().toString();
+
+        User user = userMapper.getUser(username);
+        if(user != null) {
+            String salt = user.getSalt();
+            String hashedPassword = hashService.getHashedValue(password, salt);
+            if(user.getPassword().equals(hashedPassword)) {
+                return new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
             }
         }
         return null;

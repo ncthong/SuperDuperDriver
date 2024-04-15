@@ -5,15 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-public class FileUpload {
-    private String fileName;
+@NoArgsConstructor
+public class File {
     private Integer fileId;
+    private String fileName;
     private String contentType;
     private String fileSize;
     private Integer userId;
     private byte[] fileData;
+
 }

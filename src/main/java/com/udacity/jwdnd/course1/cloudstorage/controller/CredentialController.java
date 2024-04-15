@@ -1,63 +1,81 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
-@AllArgsConstructor
 @RequestMapping("/credential")
+@AllArgsConstructor
 public class CredentialController {
     private final CredentialService credentialService;
 
-    @GetMapping("/view")
+    @GetMapping
+    public String getUserCredentials(Authentication authentication, Model model, RedirectAttributes redirectAttributes){
+        try {
+            String username = authentication.getName();
+            model.addAttribute("credentials", this.credentialService.getUserCredentials(username));
+            return "home";
+        } catch (Exception e) {
+            String errorMsg = e.getMessage();
+            redirectAttributes.addFlashAttribute("errorMsg", errorMsg);
+            return "redirect:/result?error";
+        }
+    }
+
+    @GetMapping(value = "/decrypt-password/{credentialId}")
     @ResponseBody
-    public Credential getCredential(Integer credentialId, Authentication authentication){
-        Integer userId = ((User) authentication.getPrincipal()).getUserId();
-        Credential credential = credentialService.getCredentialById(credentialId,userId);
-        if(credential == null){
-            return null;
-        }
-        credentialService.decryptPassword(credential);
-        return credential;
+    public Map<String, String> decryptCredential(Authentication authentication, @PathVariable Integer credentialId) {
+        String username = authentication.getName();
+        String rawPassword = credentialService.decryptPassword(credentialId, username);
+        Map<String, String> response = new HashMap<>();
+        response.put("decryptedPassword", rawPassword);
+        return response;
     }
 
-    @PostMapping("/save")
-    public String handleSaveCredential(Credential credential, Authentication authentication, RedirectAttributes redirectAttributes){
-        Integer userId = ((User) authentication.getPrincipal()).getUserId();
-        Integer credentialId = credential.getCredentialId();
-        credential.setUserId(userId);
-        int cnt = 0;
-        if(credentialId != null){
-            if(credentialService.getCredentialById(credentialId, userId) != null){
-                cnt = credentialService.updateCredential(credential);
+    @PostMapping
+    public String addUserCredential(Authentication authentication,Credential credential,RedirectAttributes redirectAttributes,Model model) {
+        try {
+            String username = authentication.getName();
+            int cnt = this.credentialService.addNewCredential(credential, username);
+            if(cnt == 0){
+                throw new Exception("Save Credential failed. Try again!");
             }
-        }else {
-            cnt = credentialService.addCredential(credential);
-        }
-        if(cnt == 0){
-            redirectAttributes.addFlashAttribute("errorMsg", "Credential not saved. Try Again.");
+            credential.setCredentialId(null);
+            credential.setUrl("");
+            credential.setUsername("");
+            credential.setPassword("");
+
+            List<Credential> credentials = this.credentialService.getUserCredentials(username);
+            model.addAttribute("credentials", credentials);
+            return "redirect:/result?success";
+        } catch (Exception e) {
+            String errorMsg = e.getMessage();
+            redirectAttributes.addFlashAttribute("errorMsg", errorMsg);
             return "redirect:/result?error";
         }
-        return "redirect:/result?success";
     }
 
-    @GetMapping("/delete")
-    public String handleDeleteCredential(Integer credentialId, Authentication authentication, RedirectAttributes redirectAttributes){
-        Integer userId = ((User) authentication.getPrincipal()).getUserId();
-        int cnt = credentialService.deleteCredential(credentialId,userId);
-        if(cnt == 0){
-            redirectAttributes.addFlashAttribute("errorMsg", "Credential not deleted. Try Again.");
+    @GetMapping(value = "/delete/{credentialId}")
+    public String deleteUserCredential(Authentication authentication,@PathVariable Integer credentialId,RedirectAttributes redirectAttributes,Model model) {
+        try {
+            String username = authentication.getName();
+            this.credentialService.deleteCredential(credentialId);
+            model.addAttribute("credentials", this.credentialService.getUserCredentials(username));
+            return "redirect:/result?success";
+        } catch (Exception e) {
+            String errorMsg = e.getMessage();
+            redirectAttributes.addFlashAttribute("errorMsg", errorMsg);
             return "redirect:/result?error";
         }
-        return "redirect:/result?success";
     }
 }
