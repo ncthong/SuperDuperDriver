@@ -25,7 +25,7 @@ public class HomeController {
 
 
     @GetMapping
-    public String homeView(Authentication authentication, Model model) {
+    public String getHomePage(Authentication authentication, Model model) {
         String username = authentication.getName();
         List<Note> notes = noteService.getUserNotes(username);
         List<Credential> credentials = credentialService.getUserCredentials(username);
