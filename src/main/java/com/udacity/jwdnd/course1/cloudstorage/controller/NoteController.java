@@ -40,7 +40,7 @@ public class NoteController {
         }
     }
 
-    @GetMapping(value = "/delete/{noteId}")
+    @GetMapping( "/delete/{noteId}")
     public String deleteUserNote(Authentication authentication,@PathVariable Integer noteId,RedirectAttributes redirectAttributes,Model model) {
         String username = authentication.getName();
         try {

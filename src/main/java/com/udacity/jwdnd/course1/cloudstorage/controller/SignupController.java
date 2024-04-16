@@ -30,8 +30,8 @@ public class SignupController {
             errorMsg = "The username already exists.";
         }
         if (errorMsg.isBlank()) {
-            int rowsAdded = userService.createUser(user);
-            if (rowsAdded < 0) {
+            int cnt = userService.createUser(user);
+            if (cnt == 0) {
                 errorMsg = "There was an error signing you up. Please try again.";
             }
         }

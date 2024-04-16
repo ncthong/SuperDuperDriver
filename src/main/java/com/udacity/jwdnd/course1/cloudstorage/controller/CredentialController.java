@@ -32,7 +32,7 @@ public class CredentialController {
         }
     }
 
-    @GetMapping(value = "/decrypt-password/{credentialId}")
+    @GetMapping( "/decrypt-password/{credentialId}")
     @ResponseBody
     public Map<String, String> decryptCredential(Authentication authentication, @PathVariable Integer credentialId) {
         String username = authentication.getName();
@@ -65,7 +65,7 @@ public class CredentialController {
         }
     }
 
-    @GetMapping(value = "/delete/{credentialId}")
+    @GetMapping("/delete/{credentialId}")
     public String deleteUserCredential(Authentication authentication,@PathVariable Integer credentialId,RedirectAttributes redirectAttributes,Model model) {
         try {
             String username = authentication.getName();

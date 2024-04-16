@@ -52,7 +52,7 @@ public class FileController {
         }
     }
 
-    @GetMapping(value = "/view/{fileId}")
+    @GetMapping( "/view/{fileId}")
     public ResponseEntity<byte[]> viewUserFile(Authentication authentication,@PathVariable Integer fileId){
         String username = authentication.getName();
         try {
@@ -70,7 +70,7 @@ public class FileController {
         }
     }
 
-    @GetMapping(value = "/delete/{fileId}")
+    @GetMapping( "/delete/{fileId}")
     public String deleteUserFile(Authentication authentication,@PathVariable Integer fileId,RedirectAttributes redirectAttributes,Model model){
         String username = authentication.getName();
         try{

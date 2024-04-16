@@ -18,7 +18,6 @@ import java.util.Objects;
 public class CredentialService {
     private final CredentialMapper credentialMapper;
     private final UserMapper userMapper;
-    private final HashService hashService;
     private final EncryptionService encryptionService;
 
     public List<Credential> getUserCredentials(String username) throws InvalidArgumentException {
