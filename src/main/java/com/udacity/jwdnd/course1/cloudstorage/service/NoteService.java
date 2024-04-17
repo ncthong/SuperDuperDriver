@@ -18,17 +18,13 @@ public class NoteService {
     private final UserMapper userMapper;
 
     public List<Note> getUserNotes(String username) throws InvalidArgumentException {
-        // Validate User
         User user = userMapper.getUser(username);
-        if(user == null) {
-            throw new InvalidArgumentException("User not found!");
-        }
         return noteMapper.getUserNotes(user.getUserId());
     }
 
     public void addNewNote(Note note, String username) throws InvalidArgumentException {
         User user = userMapper.getUser(username);
-        // New Note
+        // Add Note
         if(note.getNoteId() == null) {
             Note newNote = new Note(note.getNoteId(), note.getNoteTitle(), note.getNoteDescription(), user.getUserId());
             noteMapper.insert(newNote);

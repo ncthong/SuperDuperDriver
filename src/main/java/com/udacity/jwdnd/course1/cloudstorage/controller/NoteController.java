@@ -27,9 +27,6 @@ public class NoteController {
         try {
             String username = authentication.getName();
             this.noteService.addNewNote(note, username);
-            note.setNoteId(null);
-            note.setNoteTitle("");
-            note.setNoteDescription("");
             List<Note> notes = this.noteService.getUserNotes(username);
             model.addAttribute("notes", notes);
             return "redirect:/result?success";

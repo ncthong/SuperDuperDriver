@@ -50,11 +50,6 @@ public class CredentialController {
             if(cnt == 0){
                 throw new Exception("Save Credential failed. Try again!");
             }
-            credential.setCredentialId(null);
-            credential.setUrl("");
-            credential.setUsername("");
-            credential.setPassword("");
-
             List<Credential> credentials = this.credentialService.getUserCredentials(username);
             model.addAttribute("credentials", credentials);
             return "redirect:/result?success";

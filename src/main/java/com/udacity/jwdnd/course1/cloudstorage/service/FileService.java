@@ -50,24 +50,21 @@ public class FileService {
             throw new InvalidArgumentException("File with same name already exists!");
         }
 
-        byte[] fileData = file.getBytes();
-        String contentType = file.getContentType();
-        String fileSize = String.valueOf(file.getSize());
         fileUpload.setFileName(fileName);
-        fileUpload.setContentType(contentType);
-        fileUpload.setFileSize(fileSize);
+        fileUpload.setContentType(file.getContentType());
+        fileUpload.setFileSize(String.valueOf(file.getSize()));
         fileUpload.setUserId(user.getUserId());
-        fileUpload.setFileData(fileData);
+        fileUpload.setFileData(file.getBytes());
         fileMapper.insert(fileUpload);
     }
 
     public void deleteUserFile(Integer fileId, String username) throws InvalidArgumentException, IOException {
         // Validate User
         User user = userMapper.getUser(username);
-        File oldFile = fileMapper.getFileById(fileId);
-        if(oldFile == null || !Objects.equals(oldFile.getUserId(), user.getUserId())) {
+        File files = fileMapper.getFileById(fileId);
+        if(files == null || !Objects.equals(files.getUserId(), user.getUserId())) {
             throw new InvalidArgumentException("Not exist file.");
         }
-        fileMapper.delete(oldFile.getFileId());
+        fileMapper.delete(files.getFileId());
     }
 }

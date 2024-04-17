@@ -31,27 +31,20 @@ public class CredentialService {
 
     public int addNewCredential(Credential credential, String username) throws InvalidArgumentException {
         User user = userMapper.getUser(username);
-        // New Credential
+        // Add Credential
         if(credential.getCredentialId() == null) {
             encryptPassword(credential);
-            Credential newCredential = new Credential(
-                    credential.getCredentialId(),
-                    credential.getUrl(),
-                    credential.getUsername(),
-                    credential.getKeys(),
-                    credential.getPassword(),
-                    user.getUserId()
-            );
+            Credential newCredential = new Credential(credential.getCredentialId(),credential.getUrl(),credential.getUsername(),credential.getKeys(),credential.getPassword(),user.getUserId());
             return credentialMapper.insert(newCredential);
         }
         // Update Credential
         else {
-            Credential oldCredential = credentialMapper.getCredential(credential.getCredentialId());
-            oldCredential.setUrl(credential.getUrl());
-            oldCredential.setUsername(credential.getUsername());
-            String encryptedPassword = encryptionService.encryptValue(credential.getPassword(), oldCredential.getKeys());
-            oldCredential.setPassword(encryptedPassword);
-            return credentialMapper.update(oldCredential);
+            Credential currentCred = credentialMapper.getCredential(credential.getCredentialId());
+            currentCred.setUrl(credential.getUrl());
+            currentCred.setUsername(credential.getUsername());
+            String encryptedPassword = encryptionService.encryptValue(credential.getPassword(), currentCred.getKeys());
+            currentCred.setPassword(encryptedPassword);
+            return credentialMapper.update(currentCred);
         }
     }
 
