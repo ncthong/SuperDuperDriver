@@ -47,9 +47,7 @@ class NoteTests extends CloudStorageApplicationTests{
         WebElement noteTitle = driver.findElement(By.id("note-title"));
         WebElement noteDescription = driver.findElement(By.id("note-description"));
         WebElement submitNote = driver.findElement(By.id("save-note-btn"));
-        noteTitle.click();
         noteTitle.sendKeys(" updated");
-        noteDescription.click();
         noteDescription.sendKeys(" updated");
         submitNote.click();
         directToHome(wait);
@@ -81,14 +79,12 @@ class NoteTests extends CloudStorageApplicationTests{
 
 
 
-    private void fillNoteAndSave(WebDriverWait wait, String title, String content){
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("noteModalLabel")));
-        WebElement noteTitle = driver.findElement(By.id("note-title"));
+    private void fillNoteAndSave(WebDriverWait wait, String title, String content) {
+        WebElement noteTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
         WebElement noteDescription = driver.findElement(By.id("note-description"));
         WebElement noteSubmit = driver.findElement(By.id("save-note-btn"));
-        noteTitle.click();
+
         noteTitle.sendKeys(title);
-        noteDescription.click();
         noteDescription.sendKeys(content);
         noteSubmit.click();
     }

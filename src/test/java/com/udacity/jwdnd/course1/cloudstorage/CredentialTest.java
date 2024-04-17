@@ -50,13 +50,10 @@ class CredentialTest extends CloudStorageApplicationTests{
         WebElement pass = driver.findElement(By.id("credential-password"));
         String currentPass = pass.getText();
         WebElement save = driver.findElement(By.id("save-cred-btn"));
-        url.click();
         url.clear();
         url.sendKeys("http://localhost:8080/login");
-        username.click();
         username.clear();
         username.sendKeys("UsernameUpdated");
-        pass.click();
         pass.sendKeys("@password");
         save.click();
         directToHome(wait);
@@ -93,11 +90,8 @@ class CredentialTest extends CloudStorageApplicationTests{
         WebElement usernameCrd = driver.findElement(By.id("credential-username"));
         WebElement passwordCrd = driver.findElement(By.id("credential-password"));
         WebElement save = driver.findElement(By.id("save-cred-btn"));
-        urlCrd.click();
         urlCrd.sendKeys(url);
-        usernameCrd.click();
         usernameCrd.sendKeys(username);
-        passwordCrd.click();
         passwordCrd.sendKeys(password);
         save.click();
     }
