@@ -37,7 +37,7 @@ class LoginAndFileTest extends  CloudStorageApplicationTests{
     @Test
     public void testRedirection() {
         // Create a test account
-        doMockSignUp("Redirection","Test","RT","123");
+        testSignUp("Redirection","Test","RT","123");
 
         // Check if we have been redirected to the log in page.
         Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
@@ -58,7 +58,7 @@ class LoginAndFileTest extends  CloudStorageApplicationTests{
     @Test
     public void testBadUrl() {
         // Create a test account
-        doMockSignUp("URL","Test","UT","123");
+        testSignUp("URL","Test","UT","123");
         doLogIn("UT", "123");
 
         // Try to access a random made-up URL.
@@ -82,7 +82,7 @@ class LoginAndFileTest extends  CloudStorageApplicationTests{
     @Test
     public void testLargeUpload() {
         // Create a test account
-        doMockSignUp("Large File","Test","LFT","123");
+        testSignUp("Large File","Test","LFT","123");
         doLogIn("LFT", "123");
 
         // Try to upload an arbitrary large file
@@ -108,7 +108,7 @@ class LoginAndFileTest extends  CloudStorageApplicationTests{
     public void testLoginLogout() {
         //Login
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        doMockSignUp("Thong","Ng","testLogin","1");
+        testSignUp("Thong","Ng","testLogin","1");
         doLogIn("testLogin", "1");
         Assertions.assertEquals("Home", driver.getTitle());
 
@@ -122,7 +122,7 @@ class LoginAndFileTest extends  CloudStorageApplicationTests{
     @Test
     public void testNoFileUpload(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        doMockSignUp("Thong","Ng","testUpload","1");
+        testSignUp("Thong","Ng","testUpload","1");
         doLogIn("testUpload", "1");
         WebElement uploadButton = driver.findElement(By.id("uploadButton"));
         uploadButton.click();
@@ -139,7 +139,7 @@ class LoginAndFileTest extends  CloudStorageApplicationTests{
     @Test
     public void testDuplicateFileUpload(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        doMockSignUp("Thong","Ng","testUpload","1");
+        testSignUp("Thong","Ng","testUpload","1");
         doLogIn("testUpload", "1");
         String fileName = "upload5m.zip";
 

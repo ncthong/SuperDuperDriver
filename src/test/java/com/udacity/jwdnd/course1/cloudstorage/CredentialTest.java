@@ -21,7 +21,7 @@ class CredentialTest extends CloudStorageApplicationTests{
     @Test
     public void addCredentialTest(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        doMockSignUp("Thong","Ng","credentialTest","123");
+        testSignUp("Thong","Ng","credentialTest","123");
         doLogIn("credentialTest", "123");
         navigateToTab(wait, "credentials");
         openModal(wait,"credential");

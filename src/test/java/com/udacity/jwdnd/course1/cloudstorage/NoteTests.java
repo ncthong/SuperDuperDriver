@@ -21,7 +21,7 @@ class NoteTests extends CloudStorageApplicationTests{
     @Test
     public void addNewNoteTest() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        doMockSignUp("Thong","Ng","noteTest","123");
+        testSignUp("Thong","Ng","noteTest","123");
         doLogIn("noteTest", "123");
         navigateToTab(wait, "notes");
         openModal(wait,"note");

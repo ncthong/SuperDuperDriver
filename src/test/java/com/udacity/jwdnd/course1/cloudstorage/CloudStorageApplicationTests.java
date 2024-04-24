@@ -36,44 +36,22 @@ class CloudStorageApplicationTests {
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
-	public void doMockSignUp(String firstName, String lastName, String userName, String password){
-		// Create a dummy account for logging in later.
-
-		// Visit the sign-up page.
-		WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(2));
+	public void testSignUp(String firstName, String lastName, String userName, String password){
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 		driver.get("http://localhost:" + this.port + "/signup");
-		webDriverWait.until(ExpectedConditions.titleContains("Sign Up"));
+		wait.until(ExpectedConditions.titleContains("Sign Up"));
 
-		// Fill out credentials
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputFirstName")));
 		WebElement inputFirstName = driver.findElement(By.id("inputFirstName"));
-		inputFirstName.click();
-		inputFirstName.sendKeys(firstName);
-
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputLastName")));
 		WebElement inputLastName = driver.findElement(By.id("inputLastName"));
-		inputLastName.click();
-		inputLastName.sendKeys(lastName);
-
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsername")));
 		WebElement inputUsername = driver.findElement(By.id("inputUsername"));
-		inputUsername.click();
-		inputUsername.sendKeys(userName);
-
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputPassword")));
 		WebElement inputPassword = driver.findElement(By.id("inputPassword"));
-		inputPassword.click();
-		inputPassword.sendKeys(password);
-
-		// Attempt to sign up.
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("buttonSignUp")));
 		WebElement buttonSignUp = driver.findElement(By.id("buttonSignUp"));
-		buttonSignUp.click();
 
-		/* Check that the sign up was successful.
-		// You may have to modify the element "success-msg" and the sign-up
-		// success message below depening on the rest of your code.
-		*/
+		inputFirstName.sendKeys(firstName);
+		inputLastName.sendKeys(lastName);
+		inputUsername.sendKeys(userName);
+		inputPassword.sendKeys(password);
+		buttonSignUp.click();
 		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
 	}
 
@@ -83,27 +61,18 @@ class CloudStorageApplicationTests {
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
-	public void doLogIn(String userName, String password)
-	{
-		// Log in to our dummy account.
+	public void doLogIn(String userName, String password) {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 		driver.get("http://localhost:" + this.port + "/login");
-		WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(2));
 
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsername")));
 		WebElement loginUserName = driver.findElement(By.id("inputUsername"));
-		loginUserName.click();
-		loginUserName.sendKeys(userName);
-
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputPassword")));
 		WebElement loginPassword = driver.findElement(By.id("inputPassword"));
-		loginPassword.click();
-		loginPassword.sendKeys(password);
-
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login-button")));
 		WebElement loginButton = driver.findElement(By.id("login-button"));
-		loginButton.click();
 
-		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+		loginUserName.sendKeys(userName);
+		loginPassword.sendKeys(password);
+		loginButton.click();
+		wait.until(ExpectedConditions.titleContains("Home"));
 
 	}
 
