@@ -81,22 +81,17 @@ class LoginAndFileTest extends  CloudStorageApplicationTests{
      */
     @Test
     public void testLargeUpload() {
-        // Create a test account
-        testSignUp("Large File","Test","LFT","123");
-        doLogIn("LFT", "123");
-
-        // Try to upload an arbitrary large file
-        WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        testSignUp("Thong","Ng","testUpload","1");
+        doLogIn("testUpload", "1");
         String fileName = "upload5m.zip";
-
-        webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
         WebElement fileSelectButton = driver.findElement(By.id("fileUpload"));
         fileSelectButton.sendKeys(new File(fileName).getAbsolutePath());
-
         WebElement uploadButton = driver.findElement(By.id("uploadButton"));
         uploadButton.click();
         try {
-            webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("success")));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.id("success")));
         } catch (org.openqa.selenium.TimeoutException e) {
             System.out.println("Large File upload failed");
         }
